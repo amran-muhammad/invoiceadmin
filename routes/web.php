@@ -15,7 +15,7 @@ Route::get('createinvoice', function () {
     return Inertia::render('CreateInvoice');
 })->middleware(['auth', 'verified'])->name('createinvoice');
 
-Route::post('/invoices', [InvoiceController::class, 'store']);
+Route::apiResource('invoices', InvoiceController::class)->middleware(['auth', 'verified']);
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

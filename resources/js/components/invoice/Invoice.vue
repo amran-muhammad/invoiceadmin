@@ -95,6 +95,17 @@
     <!-- Download Button -->
     <button class="download-btn" @click="downloadPdf">Download PDF</button>
     <button class="download-btn" @click="saveInvoice">Save</button>
+    <div v-if="successModal" id="toast" class="fixed top-5 right-5 bg-white border border-green-500 text-green-700 rounded-lg shadow-lg p-4 transition-transform transform translate-y-full">
+        <div class="flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm1 15H9v-2h2v2zm0-4H9V7h2v4z"/>
+            </svg>
+            <div>
+                <p class="font-bold">Success!</p>
+                <p>{{ successMessage }}</p>
+            </div>
+        </div>
+    </div>
   </div>
 </template>
 
@@ -102,12 +113,11 @@
 import jsPDF from "jspdf";
 import axios from 'axios';
 import { usePage } from '@inertiajs/vue3';
-const page = usePage();
-const user = page.props.auth.user;
 
 export default {
   data() {
     return {
+        page : usePage(),
         thanksText: "THANKS FOR SHOPPING WITH US",
         ownerText: "Made by Samrat Akber",
         shopName: "Test Departmental Store",
@@ -120,12 +130,17 @@ export default {
         items: [
         { name: "Front End Consultation", description: "Experience Review", rate: 150, quantity: 4 }
         ],
-        amountPaid: 0
+        amountPaid: 0,
+        successModal: false,
+        successMessage: ""
     };
   },
   computed: {
     grandTotal() {
       return this.items.reduce((sum, item) => sum + (item.rate * item.quantity), 0);
+    },
+    user() {
+      return this.page.props.auth.user
     }
   },
   methods: {
@@ -209,14 +224,19 @@ export default {
           address1: this.address1,
           address2: this.address2,
           mobile: this.mobile,
-          shop_id: user.id,
+          shop_id: this.user.id,
           total: this.grandTotal
         };
-        console.log(invoiceData)
   
         try {
           const res = await axios.post('http://127.0.0.1:8000/invoices', invoiceData);
-          console.log(res.data.message);
+          this.invoiceNumber = this.generateInvoiceNumber()
+          this.successMessage = res.data.message
+          this.successModal = true
+          setTimeout(()=> {
+            this.successModal = false
+            this.successMessage = ""
+          },3000)
         } catch (error) {
           console.error(error.response?.data || error.message);
         }
