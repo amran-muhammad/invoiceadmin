@@ -8,15 +8,13 @@
     <!-- Info Section -->
     <div class="info-section">
       <div class="from">
-        <strong 
-            contenteditable="true"
-            @input="updateClientName" @focus="setCursorToEnd"  ref="editable">{{ client_name }}</strong><br>
-        <span contenteditable="true"
-            @input="address1 = $event.target.innerText">{{ address1 }}</span><br>
-        <span contenteditable="true"
-            @input="address2 = $event.target.innerText">{{ address2 }}</span><br>
-        <span contenteditable="true"
-            @input="mobile = $event.target.innerText">{{ mobile }}</span><br>
+        <input type="text" v-model="client_name">
+        <br>
+        <input type="text" v-model="address1">
+        <br>
+        <input type="text" v-model="address2">
+        <br>
+        <input type="text" v-model="mobile">
       </div>
       <div class="to">
         <div class="row">
@@ -36,8 +34,7 @@
 
     <!-- Bill To -->
     <div class="bill-to">
-      <h3> <strong contenteditable="true"
-            @input="shopName = $event.target.innerText">{{ shopName }}</strong></h3>
+        <input type="text" v-model="shopName">
     </div>
 
     <!-- Item Table -->
@@ -85,11 +82,10 @@
 
     <!-- Footer -->
     <div class="footer">
-      <p contenteditable="true"
-            @input="thanksText = $event.target.innerText">{{ thanksText }}</p>
+        <input type="text" v-model="thanksText" style="width: 300px;">
       <hr>
-      <small contenteditable="true"
-            @input="ownerText = $event.target.innerText">{{ ownerText }}</small>
+        <input type="text" v-model="ownerText">
+      
     </div>
 
     <!-- Download Button -->
@@ -144,18 +140,6 @@ export default {
     }
   },
   methods: {
-    updateClientName(event) {
-      this.client_name = event.target.innerText;
-    },
-    setCursorToEnd() {
-      const element = this.$refs.editable;
-      const range = document.createRange();
-      const selection = window.getSelection();
-      range.selectNodeContents(element);
-      range.collapse(false); // Move cursor to the end
-      selection.removeAllRanges();
-      selection.addRange(range);
-    },
     generateInvoiceNumber() {
         const date = new Date();
         const year = date.getFullYear().toString().slice(-2); // last 2 digits of year

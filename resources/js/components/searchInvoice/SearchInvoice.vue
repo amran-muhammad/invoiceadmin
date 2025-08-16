@@ -121,8 +121,7 @@
 
                         <!-- Bill To -->
                         <div class="bill-to">
-                        <h3> <strong contenteditable="true"
-                                @input="shopName = $event.target.innerText">{{ shopName }}</strong></h3>
+                          <input type="text" v-model="shopName"/>
                         </div>
                         <div class="table-wrapper">
                             <table class="item-table">
@@ -153,11 +152,9 @@
                 </div>
                 <!-- Footer -->
                 <div class="footer">
-                <p contenteditable="true"
-                        @input="thanksText = $event.target.innerText">{{ thanksText }}</p>
+                  <input type="text" v-model="thanksText" style="width: 300px;"/>
                 <hr>
-                <small contenteditable="true"
-                        @input="ownerText = $event.target.innerText">{{ ownerText }}</small>
+                  <input type="text" v-model="ownerText"/>
                 </div>
             </div>
             <div class="flex justify-end p-4">
