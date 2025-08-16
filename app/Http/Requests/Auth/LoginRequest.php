@@ -24,10 +24,17 @@ class LoginRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
+    // public function rules(): array
+    // {
+    //     return [
+    //         'email' => ['required', 'string', 'email'],
+    //         'password' => ['required', 'string'],
+    //     ];
+    // }
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'identifier' => ['required', 'string'],  // Change from 'email' to 'identifier'
             'password' => ['required', 'string'],
         ];
     }
@@ -37,7 +44,7 @@ class LoginRequest extends FormRequest
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function authenticate(): void
+    public function authenticate_old(): void
     {
         $this->ensureIsNotRateLimited();
 
@@ -51,6 +58,33 @@ class LoginRequest extends FormRequest
 
         RateLimiter::clear($this->throttleKey());
     }
+    /**
+ * Attempt to authenticate the request's credentials.
+ *
+ * @throws \Illuminate\Validation\ValidationException
+ */
+public function authenticate(): void
+{
+    $this->ensureIsNotRateLimited();
+
+    // Determine if the identifier is an email or a mobile number
+    $credentials = $this->only('password');
+    if (filter_var($this->input('identifier'), FILTER_VALIDATE_EMAIL)) {
+        $credentials['email'] = $this->input('identifier');
+    } else {
+        $credentials['mobile'] = $this->input('identifier');
+    }
+
+    if (! Auth::attempt($credentials, $this->boolean('remember'))) {
+        RateLimiter::hit($this->throttleKey());
+
+        throw ValidationException::withMessages([
+            'identifier' => trans('auth.failed'),
+        ]);
+    }
+
+    RateLimiter::clear($this->throttleKey());
+}
 
     /**
      * Ensure the login request is not rate limited.

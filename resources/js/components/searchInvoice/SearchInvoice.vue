@@ -80,7 +80,7 @@
         </tbody>
       </table>
 
-      <button class="mt-5 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" @click="fetchInvoices(nextPage)">Load More</button>
+      <button v-if="invoices.length > 0" class="mt-5 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" @click="fetchInvoices(nextPage)">Load More</button>
       <!-- Empty State -->
       <div
         v-if="invoices.length === 0"
@@ -212,20 +212,21 @@ export default {
     async fetchInvoicesSearch(){
         this.isSearch = true
         await this.fetchInvoices()
-    },
-    async clearSearch() {
+      },
+      async clearSearch() {
         this.search = {
-        invoice_number: '',
-        mobile: '',
-        client_name: '',
-        page: 1,
-        item_name: ''
-      }
+          invoice_number: '',
+          mobile: '',
+          client_name: '',
+          page: 1,
+          item_name: ''
+        }
+        this.isSearch = true
       await this.fetchInvoices()
     },
     async fetchInvoices(page = 1) {
       this.search['page']= page
-      const res = await axios.get('http://127.0.0.1:8000/invoices', { params: this.search });
+      const res = await axios.get('invoices', { params: this.search });
       if(this.isSearch){
         this.invoices = res.data.data;
         this.isSearch = false
@@ -238,11 +239,11 @@ export default {
     this.totalPages = res.data.last_page
     },
     editInvoice(id) {
-      this.$router.push(`http://127.0.0.1:8000/invoices/edit/${id}`);
+      this.$router.push(`invoices/edit/${id}`);
     },
     async deleteInvoice(id, index) {
       if (confirm('Are you sure?')) {
-        await axios.delete(`http://127.0.0.1:8000/invoices/${id}`);
+        await axios.delete(`invoices/${id}`);
         this.successMessage = "Invoice is deleted successfully"
         this.successModal = true
         setTimeout(()=> {

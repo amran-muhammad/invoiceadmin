@@ -10,7 +10,7 @@
       <div class="from">
         <strong 
             contenteditable="true"
-            @input="client_name = $event.target.innerText">{{ client_name }}</strong><br>
+            @input="updateClientName" @focus="setCursorToEnd"  ref="editable">{{ client_name }}</strong><br>
         <span contenteditable="true"
             @input="address1 = $event.target.innerText">{{ address1 }}</span><br>
         <span contenteditable="true"
@@ -144,6 +144,18 @@ export default {
     }
   },
   methods: {
+    updateClientName(event) {
+      this.client_name = event.target.innerText;
+    },
+    setCursorToEnd() {
+      const element = this.$refs.editable;
+      const range = document.createRange();
+      const selection = window.getSelection();
+      range.selectNodeContents(element);
+      range.collapse(false); // Move cursor to the end
+      selection.removeAllRanges();
+      selection.addRange(range);
+    },
     generateInvoiceNumber() {
         const date = new Date();
         const year = date.getFullYear().toString().slice(-2); // last 2 digits of year
@@ -229,7 +241,7 @@ export default {
         };
   
         try {
-          const res = await axios.post('http://127.0.0.1:8000/invoices', invoiceData);
+          const res = await axios.post('invoices', invoiceData);
           this.invoiceNumber = this.generateInvoiceNumber()
           this.successMessage = res.data.message
           this.successModal = true
