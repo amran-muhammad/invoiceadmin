@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\AdminUserController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -11,11 +12,17 @@ Route::get('/', function () {
 Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('userlist', function () {
+    return Inertia::render('UserList');
+})->middleware(['auth', 'verified'])->name('userlist');
+
 Route::get('createinvoice', function () {
     return Inertia::render('CreateInvoice');
 })->middleware(['auth', 'verified'])->name('createinvoice');
 
 Route::apiResource('invoices', InvoiceController::class)->middleware(['auth', 'verified']);
+Route::apiResource('userlists', AdminUserController::class)->middleware(['auth', 'verified']);
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

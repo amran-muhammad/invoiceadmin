@@ -3,23 +3,40 @@
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/vue3';
+import { User, type NavItem } from '@/types';
+import { Link, usePage } from '@inertiajs/vue3';
 import { BookOpen, Folder, LayoutGrid } from 'lucide-vue-next';
 import AppLogo from './AppLogo.vue';
 
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
+let mainNavItems: NavItem[] = []
+const page = usePage();
+const user = page.props.auth.user as User;
+let isInactive = false
+if(user.status && user.status == 'active'){
+    mainNavItems = [
+        {
+            title: 'Dashboard',
+            href: '/dashboard',
+            icon: LayoutGrid,
+        },
+        {
+            title: 'CreateInvoice',
+            href: '/createinvoice',
+            icon: LayoutGrid,
+        }
+    ];
+}
+else{
+    isInactive = true
+}
+if(user.role && user.role == 'admin') {
+    isInactive = false
+    mainNavItems.push({
+        title: 'User List',
+        href: '/userlist',
         icon: LayoutGrid,
-    },
-    {
-        title: 'CreateInvoice',
-        href: '/createinvoice',
-        icon: LayoutGrid,
-    },
-];
+    })
+}
 
 const footerNavItems: NavItem[] = [
     {
@@ -52,6 +69,7 @@ const footerNavItems: NavItem[] = [
         <SidebarContent>
             <NavMain :items="mainNavItems" />
         </SidebarContent>
+        <p v-if="isInactive">Please activate your account from admin</p>
 
         <SidebarFooter>
             <!-- <NavFooter :items="footerNavItems" /> -->

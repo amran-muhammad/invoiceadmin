@@ -1,24 +1,23 @@
 <script setup lang="ts">
+import UserListAdmin from '@/components/userlist/UserListAdmin.vue';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/vue3';
-// import PlaceholderPattern from '../components/PlaceholderPattern.vue';
-import Invoice from '@/components/invoice/Invoice.vue';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Create Invoice',
-        href: '/createinvoice',
+        title: 'User List',
+        href: '/userlist',
     },
 ];
 </script>
 
 <template>
-    <Head title="Create Invoice" />
+    <Head title="User List" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4 overflow-x-auto">
-            <Invoice/>
+            <UserListAdmin />
         </div>
     </AppLayout>
 </template>

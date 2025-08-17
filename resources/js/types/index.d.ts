@@ -34,6 +34,8 @@ export interface User {
     created_at: string;
     updated_at: string;
     mobile?: string;
+    role?: string;
+    status?: string;
 }
 
 export type BreadcrumbItemType = BreadcrumbItem;

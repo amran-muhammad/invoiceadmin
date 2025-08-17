@@ -1,5 +1,7 @@
 <template>
-  <div class="invoice-container">
+  <div>
+    <div class="invoice-container">
+  </div>
     <!-- Header -->
     <div class="header">
       <h1>INVOICE</h1>
