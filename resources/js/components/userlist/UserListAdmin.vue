@@ -37,18 +37,20 @@
             <th class="px-4 py-2">Name</th>
             <th class="px-4 py-2">Mobile</th>
             <th class="px-4 py-2">Email</th>
+            <th class="px-4 py-2">Status</th>
             <th class="px-4 py-2">Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr
             v-for="(user, index) in user_list" :key="index"
-            class="hover:bg-gray-100"
+            class="hover:bg-gray-100 bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100"
           >
        
             <td class="px-4 py-2">{{ user.name }}</td>
             <td class="px-4 py-2">{{ user.mobile }}</td>
             <td class="px-4 py-2">{{ user.email }}</td>
+            <td class="px-4 py-2">{{ user.status ? user.status : 'Pending' }}</td>
             <td class="px-4 py-2 flex gap-2">
               <button
                 @click="editUser(user)"
@@ -98,7 +100,7 @@
     <!-- Modal -->
     <div v-if="viewModal" id="modal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
         <div class="bg-white rounded-lg shadow-lg max-w-lg w-full h-3/4 overflow-hidden">
-            <div class="p-6 overflow-y-auto h-full">
+            <div class="p-6 overflow-y-auto h-full hover:bg-gray-100 bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100">
                 <div class="flex items-center">
                     <label for="status" class="mr-2 text-gray-700">Status:</label>
                         <select

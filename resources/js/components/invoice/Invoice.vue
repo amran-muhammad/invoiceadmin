@@ -74,7 +74,7 @@
       </div>
       <div class="row">
         <label>Amount Paid</label>
-        <input :value="formatCurrency(amountPaid)">
+        <input v-model="amountPaid">
       </div>
       <div class="row">
         <label>Balance Due</label>
@@ -111,6 +111,7 @@
 import jsPDF from "jspdf";
 import axios from 'axios';
 import { usePage } from '@inertiajs/vue3';
+import { format } from 'date-fns';
 
 export default {
   data() {
@@ -124,7 +125,7 @@ export default {
         address2: "Orange, CA 92866",
         mobile: "(800) 555-1234",
         invoiceNumber: this.generateInvoiceNumber(),
-        date: new Date().toLocaleDateString(),
+        date: format(new Date(),'dd/MM/yyyy'),
         items: [
         { name: "Front End Consultation", description: "Experience Review", rate: 150, quantity: 4 }
         ],
@@ -160,7 +161,8 @@ export default {
     formatCurrency(amount) {
       return `৳${amount.toFixed(2)}`;
     },
-    downloadPdf() {
+    async downloadPdf() {
+      await this.saveInvoice()
       const doc = new jsPDF();
       doc.setFontSize(18);
       doc.text("INVOICE", 90, 15);

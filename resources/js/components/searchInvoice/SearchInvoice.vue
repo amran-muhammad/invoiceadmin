@@ -49,7 +49,7 @@
         <tbody>
           <tr
             v-for="(invoice, index) in invoices" :key="index"
-            class="hover:bg-gray-100"
+            class="hover:bg-gray-100 bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100"
           >
             <td class="px-4 py-2">{{ invoice.invoice_number }}</td>
             <td class="px-4 py-2">{{ formatDate(invoice.created_at) }}</td>
@@ -111,7 +111,7 @@
     <!-- Modal -->
     <div v-if="viewModal" id="modal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
         <div class="bg-white rounded-lg shadow-lg max-w-lg w-full h-3/4 overflow-hidden">
-            <div class="p-6 overflow-y-auto h-full">
+            <div class="p-6 overflow-y-auto h-full hover:bg-gray-100 bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100">
                 <h2 class="text-lg font-bold mb-4">{{ viewInvoiceItem.client_name }}</h2>
                         <p v-if="viewInvoiceItem.invoice_number"># {{ viewInvoiceItem.invoice_number }}</p>
                         <p v-if="viewInvoiceItem.address1"> {{ viewInvoiceItem.address1 }}</p>
