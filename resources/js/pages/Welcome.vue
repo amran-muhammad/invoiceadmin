@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import Invoice from '@/components/invoice/Invoice.vue';
 import { Head, Link } from '@inertiajs/vue3';
 </script>
 
@@ -34,9 +35,17 @@ import { Head, Link } from '@inertiajs/vue3';
             </nav>
         </header>
         <div class="flex w-full items-center justify-center opacity-100 transition-opacity duration-750 lg:grow starting:opacity-0">
-            <main class="flex w-full max-w-[335px] flex-col-reverse overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row">
-                <h1>Welcome to Samrat Invoice</h1>
+            <main class="flex w-full max-w-[335px] flex-col-reverse overflow-hidden rounded-lg lg:max-w-4xl lg:flex-row" v-if="$page.props.auth.user">
+                <template v-if="$page.props.auth.user.status && $page.props.auth.user.status == 'active'">
+                    <Invoice />
+                </template>
+                <template v-else>
+                    <p class="p-6 overflow-y-auto h-full hover:bg-gray-100 bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100">Please activate your account from admin</p>
+                </template>
             </main>
+            <template v-else>
+                <p class="p-6 overflow-y-auto h-full hover:bg-gray-100 bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100">Welcome to Samrat Invoice</p>
+            </template>
         </div>
         <div class="hidden h-14.5 lg:block"></div>
     </div>

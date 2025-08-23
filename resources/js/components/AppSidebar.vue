@@ -20,7 +20,7 @@ if(user.status && user.status == 'active'){
             icon: LayoutGrid,
         },
         {
-            title: 'CreateInvoice',
+            title: 'Create Invoice',
             href: '/createinvoice',
             icon: LayoutGrid,
         }
