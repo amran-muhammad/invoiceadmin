@@ -1,5 +1,5 @@
 <template>
-  <div class="p-4 max-w-7xl mx-auto">
+  <div class="max-w-7xl mx-auto" :class="isMobile ? '': 'p-4'">
     <!-- Page Header -->
     <h1 class="text-2xl font-bold mb-4 text-center">Invoices</h1>
 
@@ -38,10 +38,23 @@
       <table class="w-full table-auto text-sm text-left border-collapse">
         <thead class="bg-blue-500 text-white">
           <tr>
-            <th class="px-4 py-2">Invoice ID</th>
-            <th class="px-4 py-2">Date</th>
-            <th class="px-4 py-2">Client Name</th>
-            <th class="px-4 py-2">Mobile</th>
+            <template v-if="isMobile">
+              <th class="px-4 py-2">Invoice ID
+                <br>
+                 Date
+              </th>
+              <th class="px-4 py-2">
+                Client Name
+                <br>
+                Mobile
+              </th>
+            </template>
+            <template v-else>
+              <th class="px-4 py-2">Invoice ID</th>
+              <th class="px-4 py-2">Date</th>
+              <th class="px-4 py-2">Client Name</th>  
+            </template>
+            
             <th class="px-4 py-2">Total</th>
             <th class="px-4 py-2">Actions</th>
           </tr>
@@ -51,24 +64,30 @@
             v-for="(invoice, index) in invoices" :key="index"
             class="hover:bg-gray-100 bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100"
           >
+          <template v-if="isMobile">
+            <td class="px-4 py-2">{{ invoice.invoice_number }} <br>
+            {{ formatDate(invoice.created_at) }} <br>
+            </td>
+            <td class="px-4 py-2">
+              {{ invoice.client_name }}
+              <br>
+              {{ invoice.mobile }}
+            </td>
+          </template>
+          <template v-else>
             <td class="px-4 py-2">{{ invoice.invoice_number }}</td>
             <td class="px-4 py-2">{{ formatDate(invoice.created_at) }}</td>
             <td class="px-4 py-2">{{ invoice.client_name }}</td>
-            <td class="px-4 py-2">{{ invoice.mobile }}</td>
+          </template>
             <td class="px-4 py-2">{{ invoice.total }}</td>
-            <td class="px-4 py-2 flex gap-2">
-              <!-- <button
-                @click="editInvoice(invoice)"
-                class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
-              >
-                Edit
-              </button> -->
+            <td class="px-4 py-2" :class="isMobile ? '': 'flex gap-2'">
               <button
                 @click="viewInvoice(invoice)"
-                class="bg-purple-500 text-white px-2 py-1 rounded hover:bg-purple-600"
+                class="bg-purple-500 text-white px-2 py-1 rounded hover:bg-purple-600" :class="isMobile ? 'mb-2': ''"
               >
                 View
               </button>
+              
               <button
                 @click="deleteInvoice(invoice.id,index)"
                 class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
@@ -202,7 +221,8 @@ export default {
       totalPages: 0,
       nextPage: 0,
       successMessage: "",
-      successModal: false
+      successModal: false,
+      isMobile: false
     };
   },
   methods: {
@@ -319,6 +339,12 @@ export default {
   },
   mounted() {
     this.fetchInvoices();
+    if (window.matchMedia("(max-width: 430px)").matches) {
+        this.isMobile = true
+      } else {
+        this.isMobile = false
+      }
+  
   }
 };
 </script>

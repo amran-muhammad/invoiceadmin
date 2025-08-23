@@ -10,13 +10,13 @@
     <!-- Info Section -->
     <div class="info-section">
       <div class="from">
-        <input type="text" v-model="client_name">
+        Customer Name: <input placeholder="Write customer name" type="text" v-model="client_name">
         <br>
-        <input type="text" v-model="address1">
+        Address: <input type="text" placeholder="Write customer address" v-model="address1">
         <br>
-        <input type="text" v-model="address2">
+        <input type="text" v-model="address2" placeholder="Write customer address if needed more">
         <br>
-        <input type="text" v-model="mobile">
+        Mobile: <input type="text" placeholder="Write customer mobile number" v-model="mobile">
       </div>
       <div class="to">
         <div class="row">
@@ -29,7 +29,7 @@
         </div>
         <div class="row">
           <label>Amount Due</label>
-          <input :value="formatCurrency(grandTotal)" readonly>
+          <input :value="formatCurrency(grandTotal-amountPaid)" readonly>
         </div>
       </div>
     </div>
@@ -41,6 +41,37 @@
 
     <!-- Item Table -->
     <div class="table-wrapper">
+    <template v-if="isMobile">
+      <table class="item-table">
+        <thead>
+          <tr>
+            <th>Item
+              <br>
+            Description</th>
+            <th>Rate
+              <br>
+            Quantity</th>
+            <th>Price</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(item, index) in items" :key="index">
+            <td>
+              <input placeholder="item name" v-model="item.name">
+               <br>
+              <input placeholder="description" v-model="item.description">
+            </td>
+            <td><input placeholder="rate" type="number" step="0.01" v-model.number="item.rate">
+              <br>
+            <input placeholder="quantity" type="number" min="1" v-model.number="item.quantity"></td>
+            <td>{{ formatCurrency(item.rate * item.quantity) }}</td>
+            <td><button @click="removeItem(index)">❌</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </template>
+    <template v-else>
       <table class="item-table">
         <thead>
           <tr>
@@ -54,15 +85,16 @@
         </thead>
         <tbody>
           <tr v-for="(item, index) in items" :key="index">
-            <td><input v-model="item.name"></td>
-            <td><input v-model="item.description"></td>
-            <td><input type="number" step="0.01" v-model.number="item.rate"></td>
-            <td><input type="number" min="1" v-model.number="item.quantity"></td>
+            <td><input placeholder="item name" v-model="item.name"></td>
+            <td><input placeholder="description" v-model="item.description"></td>
+            <td><input placeholder="rate" type="number" step="0.01" v-model.number="item.rate"></td>
+            <td><input placeholder="quantity" type="number" min="1" v-model.number="item.quantity"></td>
             <td>{{ formatCurrency(item.rate * item.quantity) }}</td>
             <td><button @click="removeItem(index)">❌</button></td>
           </tr>
         </tbody>
       </table>
+    </template>
     </div>
     <button class="add-btn" @click="addItem">➕ Add Item</button>
 
@@ -120,18 +152,19 @@ export default {
         thanksText: "THANKS FOR SHOPPING WITH US",
         ownerText: "Made by Samrat Akber",
         shopName: "Test Departmental Store",
-        client_name: "Abdur Razzak",
-        address1: "101 E. Chapman Ave",
-        address2: "Orange, CA 92866",
-        mobile: "(800) 555-1234",
+        client_name: "",
+        address1: "",
+        address2: "",
+        mobile: "",
         invoiceNumber: this.generateInvoiceNumber(),
         date: format(new Date(),'dd/MM/yyyy'),
         items: [
-        { name: "Front End Consultation", description: "Experience Review", rate: 150, quantity: 4 }
+        { name: "", description: "", rate: 0, quantity: 0 }
         ],
         amountPaid: 0,
         successModal: false,
-        successMessage: ""
+        successMessage: "",
+        isMobile: false
     };
   },
   computed: {
@@ -240,6 +273,13 @@ export default {
         } catch (error) {
           console.error(error.response?.data || error.message);
         }
+      }
+  },
+  created(){
+    if (window.matchMedia("(max-width: 430px)").matches) {
+        this.isMobile = true
+      } else {
+        this.isMobile = false
       }
   }
 };

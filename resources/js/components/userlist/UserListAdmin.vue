@@ -1,7 +1,7 @@
 <template>
-  <div class="p-4 max-w-7xl mx-auto">
+  <div class="max-w-7xl mx-auto" :class="isMobile ? '': 'p-4'">
     <!-- Page Header -->
-    <h1 class="text-2xl font-bold mb-4 text-center">Invoices</h1>
+    <h1 class="text-2xl font-bold mb-4 text-center">User List</h1>
 
     <!-- Search Bar -->
     <div class="mb-4 grid grid-cols-1 md:grid-cols-3 gap-2">
@@ -33,11 +33,18 @@
       <table class="w-full table-auto text-sm text-left border-collapse">
         <thead class="bg-blue-500 text-white">
           <tr>
-           
-            <th class="px-4 py-2">Name</th>
-            <th class="px-4 py-2">Mobile</th>
-            <th class="px-4 py-2">Email</th>
-            <th class="px-4 py-2">Status</th>
+           <template v-if="isMobile">
+              <th class="px-4 py-2">Name
+              <br> Mobile</th>
+              <th class="px-4 py-2">Email
+              <br> Status</th>
+            </template>
+            <template v-else>
+              <th class="px-4 py-2">Name</th>
+              <th class="px-4 py-2">Mobile</th>
+              <th class="px-4 py-2">Email</th>
+              <th class="px-4 py-2">Status</th>
+            </template>
             <th class="px-4 py-2">Actions</th>
           </tr>
         </thead>
@@ -46,15 +53,24 @@
             v-for="(user, index) in user_list" :key="index"
             class="hover:bg-gray-100 bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100"
           >
-       
-            <td class="px-4 py-2">{{ user.name }}</td>
-            <td class="px-4 py-2">{{ user.mobile }}</td>
-            <td class="px-4 py-2">{{ user.email }}</td>
-            <td class="px-4 py-2">{{ user.status ? user.status : 'Pending' }}</td>
-            <td class="px-4 py-2 flex gap-2">
+            <template v-if="isMobile">
+              <td class="px-4 py-2">{{ user.name }} <br>
+              {{ user.mobile }}</td>
+              <td class="px-4 py-2">{{ user.email }} <br>
+              {{ user.status ? user.status : 'Pending' }}
+            </td>
+            </template>
+            <template v-else>
+              <td class="px-4 py-2">{{ user.name }}</td>
+              <td class="px-4 py-2">{{ user.mobile }}</td>
+              <td class="px-4 py-2">{{ user.email }}</td>
+              <td class="px-4 py-2">{{ user.status ? user.status : 'Pending' }}</td>
+            </template>
+            
+            <td class="px-4 py-2" :class="isMobile ? '': 'flex gap-2'">
               <button
                 @click="editUser(user)"
-                class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
+                class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600" :class="isMobile ? 'mb-2': ''"
               >
                 Edit
               </button>
@@ -158,7 +174,8 @@ export default {
       nextPage: 0,
       successMessage: "",
       successModal: false,
-      editIndex: -1
+      editIndex: -1,
+      isMobile: false
     };
   },
   methods: {
@@ -226,6 +243,11 @@ export default {
   },
   mounted() {
     this.fetchInvoices();
+    if (window.matchMedia("(max-width: 430px)").matches) {
+        this.isMobile = true
+      } else {
+        this.isMobile = false
+      }
   }
 };
 </script>
