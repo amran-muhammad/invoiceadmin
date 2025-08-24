@@ -47,7 +47,7 @@ const submit = () => {
 
         <SettingsLayout>
             <div class="flex flex-col space-y-6">
-                <HeadingSmall title="Profile information" description="Update your name and email address" />
+                <HeadingSmall title="Profile information" description="Update your name and mobile number" />
 
                 <form @submit.prevent="submit" class="space-y-6">
                     <div class="grid gap-2">
@@ -56,7 +56,7 @@ const submit = () => {
                         <InputError class="mt-2" :message="form.errors.name" />
                     </div>
 
-                    <div class="grid gap-2">
+                    <!-- <div class="grid gap-2">
                         <Label for="email">Email address</Label>
                         <Input
                             id="email"
@@ -68,7 +68,7 @@ const submit = () => {
                             placeholder="Email address"
                         />
                         <InputError class="mt-2" :message="form.errors.email" />
-                    </div>
+                    </div> -->
                     <div class="grid gap-2">
                         <Label for="email">Mobile</Label>
                         <Input

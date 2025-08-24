@@ -10,13 +10,10 @@
     <!-- Info Section -->
     <div class="info-section">
       <div class="from">
-        Customer Name: <input placeholder="Write customer name" type="text" v-model="client_name">
+        <u>Customer Details</u><br>
+        Name: <input type="text" v-model="client_name">
         <br>
-        Address: <input type="text" placeholder="Write customer address" v-model="address1">
-        <br>
-        <input type="text" v-model="address2" placeholder="Write customer address if needed more">
-        <br>
-        Mobile: <input type="text" placeholder="Write customer mobile number" v-model="mobile">
+        Mobile: <input type="text" v-model="mobile">
       </div>
       <div class="to">
         <div class="row">
@@ -27,16 +24,18 @@
           <label>Date</label>
           <input v-model="date">
         </div>
-        <div class="row">
+        <!-- <div class="row">
           <label>Amount Due</label>
           <input :value="formatCurrency(grandTotal-amountPaid)" readonly>
-        </div>
+        </div> -->
       </div>
     </div>
 
     <!-- Bill To -->
     <div class="bill-to">
         <input type="text" v-model="shopName">
+        <br>
+        <h3>Phone: {{ user.mobile }}</h3>
     </div>
 
     <!-- Item Table -->
@@ -136,6 +135,28 @@
             </div>
         </div>
     </div>
+    <div v-if="client_name_error" id="toast" class="fixed top-5 right-5 bg-white border border-red-500 text-red-700 rounded-lg shadow-lg p-4 transition-transform transform translate-y-full">
+        <div class="flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm1 15H9v-2h2v2zm0-4H9V7h2v4z"/>
+            </svg>
+            <div>
+                <p class="font-bold">Error!</p>
+                <p>Please fill up customer name</p>
+            </div>
+        </div>
+    </div>
+    <div v-if="client_mobile_error" id="toast" class="fixed top-5 right-5 bg-white border border-red-500 text-red-700 rounded-lg shadow-lg p-4 transition-transform transform translate-y-full">
+        <div class="flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm1 15H9v-2h2v2zm0-4H9V7h2v4z"/>
+            </svg>
+            <div>
+                <p class="font-bold">Error!</p>
+                <p>Please fill up customer mobile number</p>
+            </div>
+        </div>
+    </div>
   </div>
 </template>
 
@@ -151,10 +172,10 @@ export default {
         page : usePage(),
         thanksText: "THANKS FOR SHOPPING WITH US",
         ownerText: "Made by Samrat Akber",
-        shopName: "Test Departmental Store",
+        shopName: "",
         client_name: "",
-        address1: "",
-        address2: "",
+        // address1: "",
+        // address2: "",
         mobile: "",
         invoiceNumber: this.generateInvoiceNumber(),
         date: format(new Date(),'dd/MM/yyyy'),
@@ -164,7 +185,9 @@ export default {
         amountPaid: 0,
         successModal: false,
         successMessage: "",
-        isMobile: false
+        isMobile: false,
+        client_name_error: false,
+        client_mobile_error: false,
     };
   },
   computed: {
@@ -195,6 +218,20 @@ export default {
       return `৳${amount.toFixed(2)}`;
     },
     async downloadPdf() {
+      if(this.client_name == ''){
+        this.client_name_error = true
+        setTimeout(()=> {
+          this.client_name_error = false
+        },3000)
+        return
+      }
+      else if(this.mobile == ''){
+        this.client_mobile_error = true
+        setTimeout(()=> {
+          this.client_mobile_error = false
+        },3000)
+        return
+      }
       await this.saveInvoice()
       const doc = new jsPDF();
       doc.setFontSize(18);
@@ -204,19 +241,20 @@ export default {
       doc.setFont("helvetica", "bold");
       doc.text(this.client_name, 14, 30);
       doc.setFont("helvetica", "normal");
-      doc.text(this.address1, 14, 36);
-      doc.text(this.address2, 14, 42);
-      doc.text(this.mobile, 14, 48);
+      // doc.text(this.address1, 14, 36);
+      // doc.text(this.address2, 14, 42);
+      doc.text(this.mobile, 14, 36);
       doc.setFont("helvetica", "bold");
       doc.text(this.shopName, 14, 60);
+      doc.text("Phone: "+this.user.mobile, 14, 66);
       doc.setFont("helvetica", "normal");
 
       doc.text(`Invoice #: ${this.invoiceNumber}`, 140, 30);
       doc.text(`Date: ${this.date}`, 140, 36);
-      doc.text(`Amount Due: ${this.grandTotal}`, 140, 42);
+      // doc.text(`Amount Due: ${this.grandTotal}`, 140, 42); 
 
       // Table
-      let y = 66;
+      let y = 76;
       doc.text("Item", 14, y);
       doc.text("Description", 60, y);
       doc.text("Rate", 110, y);
@@ -250,12 +288,26 @@ export default {
       doc.save("invoice.pdf");
     },
     async saveInvoice() {
+      if(this.client_name == ''){
+        this.client_name_error = true
+        setTimeout(()=> {
+          this.client_name_error = false
+        },3000)
+        return
+      }
+      else if(this.mobile == ''){
+        this.client_mobile_error = true
+        setTimeout(()=> {
+          this.client_mobile_error = false
+        },3000)
+        return
+      }
         const invoiceData = {
           invoice_number: this.invoiceNumber,
           client_name: this.client_name,
           items: this.items,
-          address1: this.address1,
-          address2: this.address2,
+          // address1: this.address1,
+          // address2: this.address2,
           mobile: this.mobile,
           shop_id: this.user.id,
           total: this.grandTotal
@@ -264,6 +316,12 @@ export default {
         try {
           const res = await axios.post('invoices', invoiceData);
           this.invoiceNumber = this.generateInvoiceNumber()
+          this.client_name = ""
+          this.mobile = ""
+          this.amountPaid = 0
+          this.items= [
+            { name: "", description: "", rate: 0, quantity: 0 }
+          ]
           this.successMessage = res.data.message
           this.successModal = true
           setTimeout(()=> {
@@ -276,6 +334,7 @@ export default {
       }
   },
   created(){
+    this.shopName = this.page.props.auth.user.name
     if (window.matchMedia("(max-width: 430px)").matches) {
         this.isMobile = true
       } else {

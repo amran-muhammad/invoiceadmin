@@ -132,15 +132,17 @@
         <div class="bg-white rounded-lg shadow-lg max-w-lg w-full h-3/4 overflow-hidden">
             <div class="p-6 overflow-y-auto h-full hover:bg-gray-100 bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100">
                 <h2 class="text-lg font-bold mb-4">{{ viewInvoiceItem.client_name }}</h2>
+                <p v-if="viewInvoiceItem.mobile"> {{ viewInvoiceItem.mobile }}</p>
                         <p v-if="viewInvoiceItem.invoice_number"># {{ viewInvoiceItem.invoice_number }}</p>
-                        <p v-if="viewInvoiceItem.address1"> {{ viewInvoiceItem.address1 }}</p>
-                        <p v-if="viewInvoiceItem.address2"> {{ viewInvoiceItem.address2 }}</p>
-                        <p v-if="viewInvoiceItem.mobile"> {{ viewInvoiceItem.mobile }}</p>
+                        <!-- <p v-if="viewInvoiceItem.address1"> {{ viewInvoiceItem.address1 }}</p> -->
+                        <!-- <p v-if="viewInvoiceItem.address2"> {{ viewInvoiceItem.address2 }}</p> -->
                         <p v-if="viewInvoiceItem.created_at">Date: {{ formatDate(viewInvoiceItem.created_at)}}</p>
 
                         <!-- Bill To -->
                         <div class="bill-to">
                           <input type="text" v-model="shopName"/>
+                          <br>
+                          <h3>Phone: {{ user.mobile }}</h3>
                         </div>
                         <div class="table-wrapper">
                             <table class="item-table">
@@ -199,13 +201,15 @@
 import jsPDF from "jspdf";
 import axios from 'axios';
 import { format } from 'date-fns'
+import { usePage } from '@inertiajs/vue3';
 
 export default {
   data() {
     return {
+      page : usePage(),
       thanksText: "THANKS FOR SHOPPING WITH US",
       ownerText: "Made by Samrat Akber",
-      shopName: "Test Departmental Store",
+      shopName: "",
       invoices: [],
       search: {
         invoice_number: '',
@@ -224,6 +228,11 @@ export default {
       successModal: false,
       isMobile: false
     };
+  },
+    computed: {
+    user() {
+      return this.page.props.auth.user
+    }
   },
   methods: {
     async fetchInvoicesSearch(){
@@ -291,19 +300,20 @@ export default {
       doc.setFont("helvetica", "bold");
       doc.text(this.viewInvoiceItem.client_name, 14, 30);
       doc.setFont("helvetica", "normal");
-      doc.text(this.viewInvoiceItem.address1, 14, 36);
-      doc.text(this.viewInvoiceItem.address2, 14, 42);
-      doc.text(this.viewInvoiceItem.mobile, 14, 48);
+      // doc.text(this.viewInvoiceItem.address1, 14, 36);
+      // doc.text(this.viewInvoiceItem.address2, 14, 42);
+      doc.text(this.viewInvoiceItem.mobile, 14, 36);
       doc.setFont("helvetica", "bold");
       doc.text(this.shopName, 14, 60);
+      doc.text("Phone: "+this.user.mobile, 14, 66);
       doc.setFont("helvetica", "normal");
 
       doc.text(`Invoice #: ${this.viewInvoiceItem.invoice_number}`, 140, 30);
       doc.text(`Date: ${ this.formatDate(this.viewInvoiceItem.created_at)}`, 140, 36);
-      doc.text(`Amount Due: ${this.viewInvoiceItem.total}`, 140, 42);
+      // doc.text(`Amount Due: ${this.viewInvoiceItem.total}`, 140, 42);
 
       // Table
-      let y = 66;
+      let y = 76;
       doc.text("Item", 14, y);
       doc.text("Description", 60, y);
       doc.text("Rate", 110, y);
@@ -338,6 +348,7 @@ export default {
     }
   },
   mounted() {
+    this.shopName = this.page.props.auth.user.name
     this.fetchInvoices();
     if (window.matchMedia("(max-width: 430px)").matches) {
         this.isMobile = true
