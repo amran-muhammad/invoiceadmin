@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="hover:bg-gray-100 bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100">
     <div class="invoice-container">
   </div>
     <!-- Header -->

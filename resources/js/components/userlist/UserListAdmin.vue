@@ -129,6 +129,18 @@
                         <option value="inactive" class="bg-white">Inactive</option>
                         </select>
                 </div>
+                <div class="flex items-center">
+                  <label for="status" class="mr-2 text-gray-700">Reset password to mobile number?</label>
+                        <select
+                        id="status"
+                        v-model="viewInvoiceItem.mobile"
+                        class="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                        <option value="" disabled>Select option</option>
+                        <option value="yes" class="bg-white">Yes</option>
+                        <option value="no" class="bg-white">No</option>
+                        </select>
+                </div>
    
                         
             
