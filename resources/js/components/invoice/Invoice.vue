@@ -33,7 +33,7 @@
 
     <!-- Bill To -->
     <div class="bill-to">
-        <input type="text" v-model="shopName">
+        Own Shop Name: <input type="text" v-model="shopName">
         <br>
         <h3>Phone: {{ user.mobile }}</h3>
     </div>
@@ -157,6 +157,17 @@
             </div>
         </div>
     </div>
+    <div v-if="item_name_error" id="toast" class="fixed top-5 right-5 bg-white border border-red-500 text-red-700 rounded-lg shadow-lg p-4 transition-transform transform translate-y-full">
+        <div class="flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm1 15H9v-2h2v2zm0-4H9V7h2v4z"/>
+            </svg>
+            <div>
+                <p class="font-bold">Error!</p>
+                <p>Please flll up item names</p>
+            </div>
+        </div>
+    </div>
   </div>
 </template>
 
@@ -186,6 +197,7 @@ export default {
         successModal: false,
         successMessage: "",
         isMobile: false,
+        item_name_error: false,
         client_name_error: false,
         client_mobile_error: false,
     };
@@ -217,18 +229,36 @@ export default {
     formatCurrency(amount) {
       return `৳${amount.toFixed(2)}`;
     },
+    checkItem(){
+      let flag = false
+      for(let item of this.items){
+        if(item.name == "" || item.name.trim() == ''){
+          flag = true
+          break
+        }
+      }
+      return flag
+    },
     async downloadPdf() {
-      if(this.client_name == ''){
+      let check = this.checkItem()
+      if(this.client_name == '' || this.client_name.trim() == ''){
         this.client_name_error = true
         setTimeout(()=> {
           this.client_name_error = false
         },3000)
         return
       }
-      else if(this.mobile == ''){
+      else if(this.mobile == '' || this.mobile.trim() == ''){
         this.client_mobile_error = true
         setTimeout(()=> {
           this.client_mobile_error = false
+        },3000)
+        return
+      }
+      if(check){
+        this.item_name_error = true
+        setTimeout(()=> {
+          this.item_name_error = false
         },3000)
         return
       }
@@ -288,17 +318,25 @@ export default {
       doc.save("invoice.pdf");
     },
     async saveInvoice() {
-      if(this.client_name == ''){
+      let check = this.checkItem()
+      if(this.client_name == '' || this.client_name.trim() == ''){
         this.client_name_error = true
         setTimeout(()=> {
           this.client_name_error = false
         },3000)
         return
       }
-      else if(this.mobile == ''){
+      else if(this.mobile == '' || this.mobile.trim() == ''){
         this.client_mobile_error = true
         setTimeout(()=> {
           this.client_mobile_error = false
+        },3000)
+        return
+      }
+      if(check){
+        this.item_name_error = true
+        setTimeout(()=> {
+          this.item_name_error = false
         },3000)
         return
       }

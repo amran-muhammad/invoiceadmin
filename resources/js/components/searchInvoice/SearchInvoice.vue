@@ -87,6 +87,12 @@
               >
                 View
               </button>
+              <button
+                @click="editInvoice(invoice, index)"
+                class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600" :class="isMobile ? 'mb-2': ''"
+              >
+                Edit
+              </button>
               
               <button
                 @click="deleteInvoice(invoice.id,index)"
@@ -125,6 +131,17 @@
             </div>
         </div>
     </div>
+<div v-if="updateSuccessModal" id="toast" class="fixed top-5 right-5 bg-white border border-green-500 text-green-700 rounded-lg shadow-lg p-4 transition-transform transform translate-y-full">
+        <div class="flex items-center">
+            <svg class="w-6 h-6 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10 10-4.48 10-10S15.52 0 10 0zm1 15H9v-2h2v2zm0-4H9V7h2v4z"/>
+            </svg>
+            <div>
+                <p class="font-bold">Updated!</p>
+                <p>{{ successMessage }}</p>
+            </div>
+        </div>
+    </div>
 
 
     <!-- Modal -->
@@ -140,7 +157,7 @@
 
                         <!-- Bill To -->
                         <div class="bill-to">
-                          <input type="text" v-model="shopName"/>
+                          Owner Shop Name: <input type="text" v-model="shopName"/>
                           <br>
                           <h3>Phone: {{ user.mobile }}</h3>
                         </div>
@@ -148,28 +165,46 @@
                             <table class="item-table">
                                 <thead>
                                     <tr>
-                                        <th>Item</th>
-                                        <th>Description</th>
-                                        <th>Rate</th>
-                                        <th>Quantity</th>
+                                      <th v-if="!editInvoiceModal">Item</th>
+                                      <th v-if="!editInvoiceModal">Description</th>
+                                      <th v-if="!editInvoiceModal">Rate</th>
+                                      <th v-if="!editInvoiceModal">Quantity</th>
+                                        <th v-if="editInvoiceModal">Item Details</th>
                                         <th>Price</th>
+                                        <th v-if="editInvoiceModal"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(item, index) in viewInvoiceItem.items" :key="index">
-                                        <td><span>{{ item.name }}</span></td>
-                                        <td><span>{{ item.description }}</span></td>
-                                        <td><span>{{ item.rate }}</span></td>
-                                        <td><span>{{ item.quantity }}</span></td>
+                                        <td v-if="!editInvoiceModal">
+                                          <span>{{ item.name }}</span>
+                                        </td>
+                                        <td v-if="editInvoiceModal">
+                                          <input  placeholder="item name" v-model="item.name"> <br>
+                                          <input  placeholder="description" v-model="item.description"> <br>
+                                          Rate: <input  placeholder="rate" type="number" step="0.01" v-model.number="item.rate"><br>
+                                          Quantity: <input  placeholder="quantity" type="number" min="1" v-model.number="item.quantity">
+                                        </td>
+                                        <td v-if="!editInvoiceModal">
+                                          <span>{{ item.description }}</span>
+                                        </td>
+                                        <td v-if="!editInvoiceModal">
+                                          <span>{{ item.rate }}</span>
+                                        </td>
+                                        <td v-if="!editInvoiceModal">
+                                          <span>{{ item.quantity }}</span>
+                                        </td>
                                         <td>{{ formatCurrency(item.rate * item.quantity) }}</td>
+                                        <td  v-if="editInvoiceModal"><button @click="removeItem(index)">❌</button></td>
                                     </tr>
                                 </tbody>
                             </table>
+                            <button v-if="editInvoiceModal" class="add-btn" @click="addItem()">➕ Add Item</button>
                             </div>
                             <div class="totals">
                 <div class="row">
                     <label>Total</label>
-                    <input :value="formatCurrency(viewInvoiceItem.total)" readonly>
+                    <input :value="formatCurrency(grandTotal)" readonly>
                 </div>
                 <!-- Footer -->
                 <div class="footer">
@@ -179,10 +214,13 @@
                 </div>
             </div>
             <div class="flex justify-end p-4">
-                <button @click="downloadPdf" id="closeModal" class="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600">
+                <button v-if="editInvoiceModal" @click="updateInvoice" id="closeModal" class="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600">
+                    Update
+                </button>
+                <button @click="downloadPdf" id="closeModal" class="ml-2 px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600">
                     Download Pdf
                 </button>
-                <button @click="viewModal=false" id="closeModal" class="ml-2 px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600">
+                <button @click="viewModal=false; editInvoiceModal=false;" id="closeModal" class="ml-2 px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-600">
                     Close
                 </button>
             </div>
@@ -226,15 +264,27 @@ export default {
       nextPage: 0,
       successMessage: "",
       successModal: false,
-      isMobile: false
+      updateSuccessModal: false,
+      isMobile: false,
+      editInvoiceModal: false,
+      editIndex: -1
     };
   },
     computed: {
     user() {
       return this.page.props.auth.user
-    }
+    },
+     grandTotal() {
+      return this.viewInvoiceItem.items.reduce((sum, item) => sum + (item.rate * item.quantity), 0);
+    },
   },
   methods: {
+    addItem() {
+      this.viewInvoiceItem.items.push({ name: "", description: "", rate: 0, quantity: 1 });
+    },
+    removeItem(index) {
+      this.viewInvoiceItem.items.splice(index, 1);
+    },
     async fetchInvoicesSearch(){
         this.isSearch = true
         await this.fetchInvoices()
@@ -264,8 +314,11 @@ export default {
     this.nextPage = this.currentPage + 1
     this.totalPages = res.data.last_page
     },
-    editInvoice(id) {
-      this.$router.push(`invoices/edit/${id}`);
+    editInvoice(data, index) {
+      this.editIndex = index
+      this.viewInvoiceItem = data
+      this.editInvoiceModal = true
+      this.viewModal = true
     },
     async deleteInvoice(id, index) {
       if (confirm('Are you sure?')) {
@@ -285,13 +338,14 @@ export default {
       return format(value,'dd/MM/yyyy HH:mm a')
     },
     viewInvoice(invoice){
-        this.viewModal = true,
+        this.viewModal = true
         this.viewInvoiceItem = invoice
     },
     formatCurrency(amount) {
       return `৳${amount}`;
     },
-    downloadPdf() {
+    async downloadPdf() {
+      await this.updateInvoice()
       const doc = new jsPDF();
       doc.setFontSize(18);
       doc.text("INVOICE", 90, 15);
@@ -331,9 +385,9 @@ export default {
       });
 
       y += 5;
-      doc.text(`Total: ${this.viewInvoiceItem.total}`, 14, y);
+      doc.text(`Total: ${this.grandTotal}`, 14, y);
       y += 6;
-      doc.text(`Amount Paid: ${this.viewInvoiceItem.total}`, 14, y);
+      doc.text(`Amount Paid: ${this.grandTotal}`, 14, y);
       y += 6;
       doc.text(`Balance Due: 0.00`, 14, y);
 
@@ -345,7 +399,23 @@ export default {
       doc.text(this.ownerText, 14, y);
 
       doc.save("invoice.pdf");
-    }
+    },
+    async updateInvoice(){
+        this.viewModal = false
+        this.editInvoiceModal = false
+        this.viewInvoiceItem['total'] = this.grandTotal
+        const res = await axios.put(`invoices/${this.viewInvoiceItem.id}`,this.viewInvoiceItem);
+        if(res){
+          this.successMessage = "Invoice updated successfully!"
+          this.updateSuccessModal = true
+          setTimeout(()=> {
+            this.updateSuccessModal = false
+            this.successMessage = ""
+          },3000) 
+        }
+        this.invoices[this.editIndex] = {...this.viewInvoiceItem}
+        console.log(this.viewInvoiceItem)
+    },
   },
   mounted() {
     this.shopName = this.page.props.auth.user.name
