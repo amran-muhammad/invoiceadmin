@@ -148,6 +148,7 @@
     <div v-if="viewModal" id="modal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
         <div class="bg-white rounded-lg shadow-lg max-w-lg w-full h-3/4 overflow-hidden">
             <div class="p-6 overflow-y-auto h-full hover:bg-gray-100 bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100">
+              <h3><u>Customer Details:</u></h3>
                 <h2 class="text-lg font-bold mb-4">{{ viewInvoiceItem.client_name }}</h2>
                 <p v-if="viewInvoiceItem.mobile"> {{ viewInvoiceItem.mobile }}</p>
                         <p v-if="viewInvoiceItem.invoice_number"># {{ viewInvoiceItem.invoice_number }}</p>
@@ -157,6 +158,7 @@
 
                         <!-- Bill To -->
                         <div class="bill-to">
+                          <h3><u>Shop Details:</u></h3>
                           Owner Shop Name: <input type="text" v-model="shopName"/>
                           <br>
                           <h3>Phone: {{ user.mobile }}</h3>
@@ -351,12 +353,14 @@ export default {
       doc.text("INVOICE", 90, 15);
 
       doc.setFontSize(12);
+      doc.text("Customer Details:", 14, 30);
       doc.setFont("helvetica", "bold");
-      doc.text(this.viewInvoiceItem.client_name, 14, 30);
+      doc.text(this.viewInvoiceItem.client_name, 14, 36);
       doc.setFont("helvetica", "normal");
       // doc.text(this.viewInvoiceItem.address1, 14, 36);
       // doc.text(this.viewInvoiceItem.address2, 14, 42);
-      doc.text(this.viewInvoiceItem.mobile, 14, 36);
+      doc.text(this.viewInvoiceItem.mobile, 14, 42);
+      doc.text("Shop Details:", 14, 54);
       doc.setFont("helvetica", "bold");
       doc.text(this.shopName, 14, 60);
       doc.text("Phone: "+this.user.mobile, 14, 66);

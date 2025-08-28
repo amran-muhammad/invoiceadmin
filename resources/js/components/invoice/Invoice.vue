@@ -33,6 +33,7 @@
 
     <!-- Bill To -->
     <div class="bill-to">
+    <h3><u>Shop Details:</u></h3>
         Own Shop Name: <input type="text" v-model="shopName">
         <br>
         <h3>Phone: {{ user.mobile }}</h3>
@@ -268,12 +269,14 @@ export default {
       doc.text("INVOICE", 90, 15);
 
       doc.setFontSize(12);
+      doc.text("Customer Details", 14, 30);
       doc.setFont("helvetica", "bold");
-      doc.text(this.client_name, 14, 30);
+      doc.text(this.client_name, 14, 36);
       doc.setFont("helvetica", "normal");
       // doc.text(this.address1, 14, 36);
       // doc.text(this.address2, 14, 42);
-      doc.text(this.mobile, 14, 36);
+      doc.text(this.mobile, 14, 42);
+      doc.text("Shop Details:", 14, 54);
       doc.setFont("helvetica", "bold");
       doc.text(this.shopName, 14, 60);
       doc.text("Phone: "+this.user.mobile, 14, 66);
@@ -353,13 +356,6 @@ export default {
   
         try {
           const res = await axios.post('invoices', invoiceData);
-          this.invoiceNumber = this.generateInvoiceNumber()
-          this.client_name = ""
-          this.mobile = ""
-          this.amountPaid = 0
-          this.items= [
-            { name: "", description: "", rate: 0, quantity: 0 }
-          ]
           this.successMessage = res.data.message
           this.successModal = true
           setTimeout(()=> {
