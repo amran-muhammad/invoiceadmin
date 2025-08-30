@@ -11,12 +11,12 @@
         placeholder="Search by Name"
         class="border rounded px-3 py-2 w-full focus:ring focus:ring-blue-300"
       />
-      <input
+      <!-- <input
         v-model="search.email"
         type="text"
         placeholder="Search by Email"
         class="border rounded px-3 py-2 w-full focus:ring focus:ring-blue-300"
-      />
+      /> -->
       <input
         v-model="search.mobile"
         type="text"
@@ -36,13 +36,15 @@
            <template v-if="isMobile">
               <th class="px-4 py-2">Name
               <br> Mobile</th>
-              <th class="px-4 py-2">Email
-              <br> Status</th>
+              <th class="px-4 py-2">
+                <!-- Email
+              <br>  -->
+              Status</th>
             </template>
             <template v-else>
               <th class="px-4 py-2">Name</th>
               <th class="px-4 py-2">Mobile</th>
-              <th class="px-4 py-2">Email</th>
+              <!-- <th class="px-4 py-2">Email</th> -->
               <th class="px-4 py-2">Status</th>
             </template>
             <th class="px-4 py-2">Actions</th>
@@ -63,23 +65,23 @@
             <template v-else>
               <td class="px-4 py-2">{{ user.name }}</td>
               <td class="px-4 py-2">{{ user.mobile }}</td>
-              <td class="px-4 py-2">{{ user.email }}</td>
+              <!-- <td class="px-4 py-2">{{ user.email }}</td> -->
               <td class="px-4 py-2">{{ user.status ? user.status : 'Pending' }}</td>
             </template>
             
             <td class="px-4 py-2" :class="isMobile ? '': 'flex gap-2'">
               <button
-                @click="editUser(user)"
+                @click="editUser(user,index)"
                 class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600" :class="isMobile ? 'mb-2': ''"
               >
                 Edit
               </button>
-              <button
+              <!-- <button
                 @click="deleteInvoice(invoice.id,index)"
                 class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
               >
                 Delete
-              </button>
+              </button> -->
             </td>
           </tr>
         </tbody>
@@ -219,9 +221,7 @@ export default {
     this.nextPage = this.currentPage + 1
     this.totalPages = res.data.last_page
     },
-    editInvoice(id) {
-      this.$router.push(`invoices/edit/${id}`);
-    },
+   
     async deleteInvoice(id, index) {
       if (confirm('Are you sure?')) {
         await axios.delete(`invoices/${id}`);
@@ -248,9 +248,10 @@ export default {
         }
         console.log(this.viewInvoiceItem)
     },
-    editUser(invoice){
+    editUser(invoice,index){
         this.viewModal = true
-        this.viewInvoiceItem = invoice
+        this.editIndex = index
+        this.viewInvoiceItem = {...invoice}
     },
   },
   mounted() {

@@ -26,7 +26,7 @@
       <input
         v-model="search.client_name"
         type="text"
-        placeholder="Search by Client Name"
+        placeholder="Search by Customer Name"
         class="border rounded px-3 py-2 w-full focus:ring focus:ring-blue-300"
       />
       <button class="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" @click="fetchInvoicesSearch()">Search</button>
@@ -52,7 +52,7 @@
             <template v-else>
               <th class="px-4 py-2">Invoice ID</th>
               <th class="px-4 py-2">Date</th>
-              <th class="px-4 py-2">Client Name</th>  
+              <th class="px-4 py-2">Customer Name</th>  
             </template>
             
             <th class="px-4 py-2">Total</th>
