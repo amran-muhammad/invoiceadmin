@@ -23,6 +23,11 @@ if(user.status && user.status == 'active'){
             title: 'Create Invoice',
             href: '/createinvoice',
             icon: LayoutGrid,
+        },
+        {
+            title: 'Product List',
+            href:'/productlist',
+            icon: LayoutGrid,
         }
     ];
 }

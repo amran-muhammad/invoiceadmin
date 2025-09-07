@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\ProductController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome');
@@ -16,6 +17,9 @@ Route::get('dashboard', function () {
 Route::get('userlist', function () {
     return Inertia::render('UserList');
 })->middleware(['auth', 'verified'])->name('userlist');
+Route::get('productlist', function () {
+    return Inertia::render('ProductList');
+})->middleware(['auth', 'verified'])->name('productlist');
 
 Route::get('createinvoice', function () {
     return Inertia::render('CreateInvoice');
@@ -23,6 +27,7 @@ Route::get('createinvoice', function () {
 
 Route::apiResource('invoices', InvoiceController::class)->middleware(['auth', 'verified']);
 Route::apiResource('userlists', AdminUserController::class)->middleware(['auth', 'verified']);
+Route::apiResource('productlists', ProductController::class)->middleware(['auth', 'verified']);
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';

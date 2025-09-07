@@ -58,7 +58,9 @@
             <template v-if="isMobile">
               <td class="px-4 py-2">{{ user.name }} <br>
               {{ user.mobile }}</td>
-              <td class="px-4 py-2">{{ user.email }} <br>
+              <td class="px-4 py-2">
+                <!-- {{ user.email }} 
+                <br> -->
               {{ user.status ? user.status : 'Pending' }}
             </td>
             </template>
@@ -87,7 +89,7 @@
         </tbody>
       </table>
 
-      <button v-if="user_list.length > 0" class="mt-5 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" @click="fetchInvoices(nextPage)">Load More</button>
+      <button v-if="user_list.length > 9" class="mt-5 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" @click="fetchInvoices(nextPage)">Load More</button>
       <!-- Empty State -->
       <div
         v-if="user_list.length === 0"
@@ -120,7 +122,9 @@
         <div class="bg-white rounded-lg shadow-lg max-w-lg w-full h-3/4 overflow-hidden">
             <div class="p-6 overflow-y-auto h-full hover:bg-gray-100 bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100">
                 <div class="flex items-center">
-                    <label for="status" class="mr-2 text-gray-700">Status:</label>
+                    <label for="status" class="mr-2 text-gray-700">
+                      <span class="hover:bg-gray-100 bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100">Status:</span>
+                    </label>
                         <select
                         id="status"
                         v-model="viewInvoiceItem.status"
@@ -132,7 +136,11 @@
                         </select>
                 </div>
                 <div class="flex items-center">
-                  <label for="status" class="mr-2 text-gray-700">Reset password to mobile number?</label>
+                  <label for="status" class="mr-2 text-gray-700">
+                    <span class="hover:bg-gray-100 bg-white shadow-xs dark:bg-neutral-700 dark:text-neutral-100">
+                      Reset password to mobile number?
+                    </span>
+                    </label>
                         <select
                         id="status"
                         v-model="viewInvoiceItem.mobile"

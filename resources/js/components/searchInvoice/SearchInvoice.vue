@@ -105,7 +105,7 @@
         </tbody>
       </table>
 
-      <button v-if="invoices.length > 0" class="mt-5 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" @click="fetchInvoices(nextPage)">Load More</button>
+      <button v-if="invoices.length > 9" class="mt-5 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" @click="fetchInvoices(nextPage)">Load More</button>
       <!-- Empty State -->
       <div
         v-if="invoices.length === 0"
