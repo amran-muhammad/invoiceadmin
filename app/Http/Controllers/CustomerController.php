@@ -2,22 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 
-class ProductController extends Controller
+class CustomerController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
-        $query = Product::query();
+        $query = Customer::query();
         $query->where('shop_id', $request->user()->id);
         if ($request->name) {
             $query->where('name', 'like', "%{$request->name}%");
         }
-
         return response()->json($query->latest()->paginate(10));
     }
 
@@ -34,18 +33,18 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $product = Product::create($request->all());
+        $customer = Customer::create($request->all());
 
         return response()->json([
-            'message' => 'Product saved successfully!',
-            'product' => $product
+            'message' => 'Customer saved successfully!',
+            'customer' => $customer
         ], 201);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(Customer $customer)
     {
         //
     }
@@ -53,7 +52,7 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit(Customer $customer)
     {
         //
     }
@@ -63,7 +62,7 @@ class ProductController extends Controller
      */
     public function update(Request $request,$id)
     {
-        $invoice = Product::findOrFail($id);
+        $invoice = Customer::findOrFail($id);
         $invoice->update($request->all());
         return response()->json($invoice);
     }
@@ -73,7 +72,7 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        Product::findOrFail($id)->delete();
+        Customer::findOrFail($id)->delete();
         return response()->json(['message' => 'Deleted successfully']);
     }
 }

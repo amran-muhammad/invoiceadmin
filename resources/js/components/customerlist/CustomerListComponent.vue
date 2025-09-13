@@ -4,16 +4,15 @@
   </div>
    
     <!-- Item Table -->
-     <button class="add-btn" @click="addItem">➕ Add Item</button>
+     <button class="add-btn" @click="addItem">➕ Add Customer</button>
     <div class="table-wrapper">
-    <template v-if="isMobile">
+   
       <table class="item-table">
         <thead>
           <tr>
-            <th>Item
-              <br>
-            Description</th>
-            <th>Rate</th>
+            <th>Name
+            </th>
+            <th>Mobile</th>
             <th></th>
           </tr>
         </thead>
@@ -21,14 +20,11 @@
           <tr v-for="(item, index) in items" :key="index">
             <td>
               {{ item.name }}
-               <br>
-              {{ item.description }}
             </td>
             <td>
-                {{ item.rate }}
-              <br>
+                {{ item.mobile }}
             </td>
-            <td><button @click="deleteItem(index)">❌</button>
+            <td><button @click="removeItem(index)">❌</button>
             <button class="flex items-center space-x-2 p-2 rounded-md">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hover:text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
@@ -38,41 +34,8 @@
           </tr>
         </tbody>
       </table>
-    </template>
-    <template v-else>
-      <table class="item-table">
-        <thead>
-          <tr>
-            <th>Item</th>
-            <th>Description</th>
-            <th>Rate</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(item, index) in items" :key="index">
-            <td>{{ item.name }}</td>
-            <td>{{ item.description }}</td>
-            <td>{{ item.rate }}</td>
-            <td><button @click="deleteItem(item.id,index)">❌</button>
-            <button @click="editItem(index)" class="flex items-center space-x-2 p-2 rounded-md">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hover:text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                </svg>
-            </button>
-        </td>
-          </tr>
-        </tbody>
-      </table>
-      <button v-if="items.length > 9" class="mt-5 px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500" @click="fetchProducts(nextPage)">Load More</button>
-      <!-- Empty State -->
-      <div
-        v-if="items.length === 0"
-        class="text-center p-4 text-gray-500"
-      >
-        No items found.
-      </div>
-    </template>
+   
+   
     </div>
 
    
@@ -128,18 +91,15 @@
                     <div class="grid gap-6">
                         <div class="grid gap-2">
                             <label for="name">Name</label>
-                            <input id="name" type="text" autocomplete="name" v-model="newItem.name" placeholder="Enter product name"/>
+                            <input id="name" type="text" autocomplete="name" v-model="newItem.name" placeholder="Enter name"/>
                         </div>
 
                     
                         <div class="grid gap-2">
-                            <label for="mobile">Description</label>
-                            <input id="mobile" type="textarea" autocomplete="mobile" v-model="newItem.description"  placeholder="Enter product description"/>
+                            <label for="mobile">Mobile Number</label>
+                            <input id="mobile" type="textarea" autocomplete="mobile" v-model="newItem.mobile"  placeholder="Enter mobile number"/>
                         </div>
-                        <div class="grid gap-2">
-                            <label for="rate">Rate</label>
-                            <input id="rate" type="textarea" autocomplete="rate" v-model="newItem.rate"  placeholder="Enter product rate"/>
-                        </div>
+                        
 
                         <div class="flex justify-end p-4">
                            <button @click="saveProduct" id="closeModal" class="px-4 py-2 text-white bg-green-500 rounded-md hover:bg-green-600">
@@ -165,7 +125,7 @@ export default {
     return {
         page : usePage(),
         items: [],
-        newItem: { name: "", description: "", rate: 0 },
+        newItem: { name: "", mobile: "" },
         search: {
             name: '',
             page: 1
@@ -193,7 +153,7 @@ export default {
     },
     async fetchProducts(page) {
       this.search['page']= page
-      const res = await axios.get('productlists', { params: this.search });
+      const res = await axios.get('customerlists', { params: this.search });
       if(page==1){
         this.items = res.data.data;
       }
@@ -202,10 +162,10 @@ export default {
       }
       this.nextPage = res.data.current_page + 1
     },
-    async deleteItem(id, index){
+    async removeItem(id, index){
         if (confirm('Are you sure?')) {
-            await axios.delete(`productlists/${id}`);
-            this.successMessage = "Item is deleted successfully"
+            await axios.delete(`customerlists/${id}`);
+            this.successMessage = "Customer is deleted successfully"
             this.successModal = true
             setTimeout(()=> {
                 this.successModal = false
@@ -234,9 +194,9 @@ export default {
         if(this.editIndex >-1){
             try {
                 this.addModal = false
-                const res = await axios.put(`productlists/${this.items[this.editIndex].id}`,{...this.newItem, shop_id: this.shop_id});
+                const res = await axios.put(`customerlists/${this.items[this.editIndex].id}`,{...this.newItem, shop_id: this.shop_id});
                 if(res){
-                    this.successMessage = "Item updated successfully!"
+                    this.successMessage = "Customer updated successfully!"
                     this.successModal = true
                     setTimeout(()=> {
                         this.successModal = false
@@ -244,7 +204,7 @@ export default {
                     },3000) 
                 }
                 this.items[this.editIndex] = {...this.newItem, shop_id: this.shop_id}
-                this.newItem = { name: "", description: "", rate: 0 }
+                this.newItem = { name: "", mobile: "", rate: 0 }
                 this.editIndex = -1
             } catch (error) {
                 
@@ -252,11 +212,11 @@ export default {
         }
         else{
             try {
-                await axios.post('productlists', {...this.newItem, shop_id: this.shop_id});
-                this.successMessage = "Item added successfully"
+                await axios.post('customerlists', {...this.newItem, shop_id: this.shop_id});
+                this.successMessage = "Customer added successfully"
                 this.successModal = true
                 this.items.push({...this.newItem})
-                this.newItem = { name: "", description: "", rate: 0 }
+                this.newItem = { name: "", mobile: "" }
                 this.addModal = false
                 setTimeout(()=> {
                 this.successModal = false

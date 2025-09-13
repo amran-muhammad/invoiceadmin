@@ -28,7 +28,12 @@ if(user.status && user.status == 'active'){
             title: 'Product List',
             href:'/productlist',
             icon: LayoutGrid,
-        }
+        },
+        {
+            title: 'Customer List',
+            href:'/customerlist',
+            icon: LayoutGrid,
+        },
     ];
 }
 else{

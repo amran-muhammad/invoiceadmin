@@ -11,7 +11,16 @@
     <div class="info-section">
       <div class="from">
         <u>Customer Details</u><br>
-        Name: <input type="text" v-model="client_name">
+        Name: <input type="text" v-model="client_name" @input="searchCustomers($event, index)">
+              <ul v-if="customers.length" class="mt-2 border rounded p-2">
+                <li
+                  v-for="customer in customers"
+                  :key="customer.id"
+                  @click="selectCustomer(customer)"
+                >
+                  {{ customer.name }}
+                </li>
+              </ul>
         <br>
         Mobile: <input type="text" v-model="mobile">
       </div>
@@ -58,7 +67,16 @@
         <tbody>
           <tr v-for="(item, index) in items" :key="index">
             <td>
-              <input placeholder="item name" v-model="item.name">
+              <input placeholder="item name" v-model="item.name" @input="searchProducts($event, index)">
+              <ul v-if="results.length && searchInProductIndex == index" class="mt-2 border rounded p-2">
+                <li
+                  v-for="product in results"
+                  :key="product.id"
+                  @click="selectProduct(product,index)"
+                >
+                  {{ product.name }}
+                </li>
+              </ul>
                <br>
               <input placeholder="description" v-model="item.description">
             </td>
@@ -85,7 +103,18 @@
         </thead>
         <tbody>
           <tr v-for="(item, index) in items" :key="index">
-            <td><input placeholder="item name" v-model="item.name"></td>
+            <td>
+              <input placeholder="item name" v-model="item.name" @input="searchProducts($event, index)">
+              <ul v-if="results.length && searchInProductIndex == index" class="mt-2 border rounded p-2">
+                <li
+                  v-for="product in results"
+                  :key="product.id"
+                  @click="selectProduct(product,index)"
+                >
+                  {{ product.name }}
+                </li>
+              </ul>
+            </td>
             <td><input placeholder="description" v-model="item.description"></td>
             <td><input placeholder="rate" type="number" step="0.01" v-model.number="item.rate"></td>
             <td><input placeholder="quantity" type="number" min="1" v-model.number="item.quantity"></td>
@@ -194,6 +223,8 @@ export default {
         items: [
         { name: "", description: "", rate: 0, quantity: 0 }
         ],
+        results: [],
+        customers: [],
         amountPaid: 0,
         successModal: false,
         successMessage: "",
@@ -201,6 +232,7 @@ export default {
         item_name_error: false,
         client_name_error: false,
         client_mobile_error: false,
+        searchInProductIndex: -1
     };
   },
   computed: {
@@ -365,6 +397,56 @@ export default {
         } catch (error) {
           console.error(error.response?.data || error.message);
         }
+      },
+      searchProducts(event,index){
+        this.searchInProductIndex = index
+        let query = event.target
+        setTimeout(async () => {
+          if (query.value.trim().length < 2) {
+            this.results = [];
+            return;
+          }
+
+          try {
+            const res = await axios.get(
+              `productlists?name=${query.value}`
+            );
+            this.results = res.data.data; // assuming API returns [{id, name}, ...]
+          } catch (err) {
+            console.error(err);
+          }
+        }, 300);
+      },
+      selectProduct(product, index){
+        this.items[index].name = product.name;
+        this.items[index].description = product.description;
+        this.items[index].rate = product.rate;
+        this.results = []
+      },
+      searchCustomers(event,index){
+        this.searchInCustomerIndex = index
+        let query = event.target
+      
+        setTimeout(async () => {
+          if (query.value.trim().length < 2) {
+            this.results = [];
+            return;
+          }
+
+          try {
+            const res = await axios.get(
+              `customerlists?name=${query.value}`
+            );
+            this.customers = res.data.data; // assuming API returns [{id, name}, ...]
+          } catch (err) {
+            console.error(err);
+          }
+        }, 300);
+      },
+      selectCustomer(customer){
+        this.client_name = customer.name;
+        this.mobile = customer.mobile;
+        this.customers = []
       }
   },
   created(){
