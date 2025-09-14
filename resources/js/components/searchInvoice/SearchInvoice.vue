@@ -354,6 +354,13 @@ export default {
 
       doc.setFontSize(12);
       doc.text("Customer Details:", 14, 30);
+
+      const underlineDistance = 0.3
+      const textWidth = doc.getTextWidth("Customer Details:");
+      doc.setLineWidth(0.2);
+      doc.setDrawColor(0);
+      doc.line(14, 30 + underlineDistance, 14 + textWidth, 30 + underlineDistance);
+
       doc.setFont("helvetica", "bold");
       doc.text(this.viewInvoiceItem.client_name, 14, 36);
       doc.setFont("helvetica", "normal");
@@ -361,6 +368,12 @@ export default {
       doc.text(this.viewInvoiceItem.mobile, 14, 42);
       doc.text(this.viewInvoiceItem.address1, 14, 48);
       doc.text("Shop Details:", 14, 60);
+
+      const textWidth2 = doc.getTextWidth("Shop Details:");
+      doc.setLineWidth(0.2);
+      doc.setDrawColor(0);
+      doc.line(14, 60 + underlineDistance, 14 + textWidth2, 60 + underlineDistance);
+
       doc.setFont("helvetica", "bold");
       doc.text(this.shopName, 14, 66);
       doc.text("Phone: "+this.user.mobile, 14, 72);

@@ -303,7 +303,14 @@ export default {
       doc.text("INVOICE", 90, 15);
 
       doc.setFontSize(12);
-      doc.text("Customer Details", 14, 30);
+      doc.text("Customer Details:", 14, 30);
+
+      const underlineDistance = 0.3
+      const textWidth = doc.getTextWidth("Customer Details:");
+      doc.setLineWidth(0.2);
+      doc.setDrawColor(0);
+      doc.line(14, 30 + underlineDistance, 14 + textWidth, 30 + underlineDistance);
+
       doc.setFont("helvetica", "bold");
       doc.text(this.client_name, 14, 36);
       doc.setFont("helvetica", "normal");
@@ -311,6 +318,12 @@ export default {
       doc.text(this.address1, 14, 48);
       // doc.text(this.address2, 14, 42);
       doc.text("Shop Details:", 14, 60);
+
+      const textWidth2 = doc.getTextWidth("Shop Details:");
+      doc.setLineWidth(0.2);
+      doc.setDrawColor(0);
+      doc.line(14, 60 + underlineDistance, 14 + textWidth2, 60 + underlineDistance);
+
       doc.setFont("helvetica", "bold");
       doc.text(this.shopName, 14, 66);
       doc.text("Phone: "+this.user.mobile, 14, 72);
@@ -332,9 +345,9 @@ export default {
       this.items.forEach(item => {
         doc.text(item.name, 14, y);
         doc.text(item.description, 60, y);
-        doc.text(item.rate.toFixed(2), 110, y);
+        doc.text(typeof item.rate == 'number' ? item.rate.toFixed(2) : Number(item.rate).toFixed(2), 110, y);
         doc.text(String(item.quantity), 130, y);
-        doc.text((item.rate * item.quantity).toFixed(2), 150, y);
+        doc.text((typeof item.rate == 'number' ? item.rate : Number(item.rate) * item.quantity).toFixed(2), 150, y);
         y += 10;
       });
 
