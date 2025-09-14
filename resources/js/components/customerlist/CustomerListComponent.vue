@@ -11,8 +11,9 @@
         <thead>
           <tr>
             <th>Name
-            </th>
-            <th>Mobile</th>
+            <br>
+            Mobile</th>
+            <th>Address</th>
             <th></th>
           </tr>
         </thead>
@@ -20,9 +21,11 @@
           <tr v-for="(item, index) in items" :key="index">
             <td>
               {{ item.name }}
+            <br>
+                {{ item.mobile }}
             </td>
             <td>
-                {{ item.mobile }}
+                {{ item.address1 }}
             </td>
             <td><button @click="removeItem(index)">❌</button>
             <button class="flex items-center space-x-2 p-2 rounded-md" @click="editItem(index)">
@@ -99,6 +102,10 @@
                             <label for="mobile">Mobile Number</label>
                             <input id="mobile" type="textarea" autocomplete="mobile" v-model="newItem.mobile"  placeholder="Enter mobile number"/>
                         </div>
+                        <div class="grid gap-2">
+                            <label for="address1">Address</label>
+                            <input id="address1" type="textarea" autocomplete="address1" v-model="newItem.address1"  placeholder="Enter mobile number"/>
+                        </div>
                         
 
                         <div class="flex justify-end p-4">
@@ -125,7 +132,7 @@ export default {
     return {
         page : usePage(),
         items: [],
-        newItem: { name: "", mobile: "" },
+        newItem: { name: "", mobile: "", address1: "" },
         search: {
             name: '',
             page: 1
@@ -204,7 +211,7 @@ export default {
                     },3000) 
                 }
                 this.items[this.editIndex] = {...this.newItem, shop_id: this.shop_id}
-                this.newItem = { name: "", mobile: "", rate: 0 }
+                this.newItem = { name: "", mobile: "", address1: "" }
                 this.editIndex = -1
             } catch (error) {
                 

@@ -23,6 +23,8 @@
               </ul>
         <br>
         Mobile: <input type="text" v-model="mobile">
+        <br>
+        Address: <input type="text" v-model="address1">
       </div>
       <div class="to">
         <div class="row">
@@ -215,7 +217,7 @@ export default {
         ownerText: "Made by Samrat Akber",
         shopName: "",
         client_name: "",
-        // address1: "",
+        address1: "",
         // address2: "",
         mobile: "",
         invoiceNumber: this.generateInvoiceNumber(),
@@ -305,13 +307,13 @@ export default {
       doc.setFont("helvetica", "bold");
       doc.text(this.client_name, 14, 36);
       doc.setFont("helvetica", "normal");
-      // doc.text(this.address1, 14, 36);
-      // doc.text(this.address2, 14, 42);
       doc.text(this.mobile, 14, 42);
-      doc.text("Shop Details:", 14, 54);
+      doc.text(this.address1, 14, 48);
+      // doc.text(this.address2, 14, 42);
+      doc.text("Shop Details:", 14, 60);
       doc.setFont("helvetica", "bold");
-      doc.text(this.shopName, 14, 60);
-      doc.text("Phone: "+this.user.mobile, 14, 66);
+      doc.text(this.shopName, 14, 66);
+      doc.text("Phone: "+this.user.mobile, 14, 72);
       doc.setFont("helvetica", "normal");
 
       doc.text(`Invoice #: ${this.invoiceNumber}`, 140, 30);
@@ -319,7 +321,7 @@ export default {
       // doc.text(`Amount Due: ${this.grandTotal}`, 140, 42); 
 
       // Table
-      let y = 76;
+      let y = 82;
       doc.text("Item", 14, y);
       doc.text("Description", 60, y);
       doc.text("Rate", 110, y);
@@ -379,7 +381,7 @@ export default {
           invoice_number: this.invoiceNumber,
           client_name: this.client_name,
           items: this.items,
-          // address1: this.address1,
+          address1: this.address1,
           // address2: this.address2,
           mobile: this.mobile,
           shop_id: this.user.id,
@@ -446,6 +448,7 @@ export default {
       selectCustomer(customer){
         this.client_name = customer.name;
         this.mobile = customer.mobile;
+        this.address1 = customer.address1
         this.customers = []
       }
   },

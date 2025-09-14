@@ -152,7 +152,7 @@
                 <h2 class="text-lg font-bold mb-4">{{ viewInvoiceItem.client_name }}</h2>
                 <p v-if="viewInvoiceItem.mobile"> {{ viewInvoiceItem.mobile }}</p>
                         <p v-if="viewInvoiceItem.invoice_number"># {{ viewInvoiceItem.invoice_number }}</p>
-                        <!-- <p v-if="viewInvoiceItem.address1"> {{ viewInvoiceItem.address1 }}</p> -->
+                        <p v-if="viewInvoiceItem.address1"> {{ viewInvoiceItem.address1 }}</p>
                         <!-- <p v-if="viewInvoiceItem.address2"> {{ viewInvoiceItem.address2 }}</p> -->
                         <p v-if="viewInvoiceItem.created_at">Date: {{ formatDate(viewInvoiceItem.created_at)}}</p>
 
@@ -357,13 +357,13 @@ export default {
       doc.setFont("helvetica", "bold");
       doc.text(this.viewInvoiceItem.client_name, 14, 36);
       doc.setFont("helvetica", "normal");
-      // doc.text(this.viewInvoiceItem.address1, 14, 36);
       // doc.text(this.viewInvoiceItem.address2, 14, 42);
       doc.text(this.viewInvoiceItem.mobile, 14, 42);
-      doc.text("Shop Details:", 14, 54);
+      doc.text(this.viewInvoiceItem.address1, 14, 48);
+      doc.text("Shop Details:", 14, 60);
       doc.setFont("helvetica", "bold");
-      doc.text(this.shopName, 14, 60);
-      doc.text("Phone: "+this.user.mobile, 14, 66);
+      doc.text(this.shopName, 14, 66);
+      doc.text("Phone: "+this.user.mobile, 14, 72);
       doc.setFont("helvetica", "normal");
 
       doc.text(`Invoice #: ${this.viewInvoiceItem.invoice_number}`, 140, 30);
@@ -371,7 +371,7 @@ export default {
       // doc.text(`Amount Due: ${this.viewInvoiceItem.total}`, 140, 42);
 
       // Table
-      let y = 76;
+      let y = 82;
       doc.text("Item", 14, y);
       doc.text("Description", 60, y);
       doc.text("Rate", 110, y);
